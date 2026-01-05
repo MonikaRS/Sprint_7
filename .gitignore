@@ -31,3 +31,8 @@ target/allure-results/*.tmp
 .allure/
 allure-*/
 allure-current
+# Allure reports and binaries
+.allure/
+allure-*/
+allure-current
+tools/allure/allure-2.24.0/
