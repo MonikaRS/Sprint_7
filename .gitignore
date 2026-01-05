@@ -1,0 +1,33 @@
+# Maven
+target/
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+
+# IDE
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Allure отчеты
+allure-report/
+allure-results/
+
+# Исключение для allure-results внутри target (чтобы коммитить)
+!target/allure-results/
+target/allure-results/*.txt
+target/allure-results/*.tmp
+.allure/
+allure-*/
+allure-current
