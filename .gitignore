@@ -49,3 +49,23 @@ tools/allure/allure-2.24.0/
 # But ignore temporary files inside
 target/allure-results/*.txt
 target/allure-results/*.tmp
+
+# ========== TEMPORARY FILES ==========
+# Build artifacts
+target/
+
+# Allure reports
+.allure/
+allure-results/
+allure-report/
+
+# Backups and temporary copies
+.git_backup_current/
+backup_*/
+*.backup
+*.bak
+
+# IDE and OS files
+.idea/
+*.iml
+.DS_Store
