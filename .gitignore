@@ -1,4 +1,6 @@
-# Maven
+# ============================================
+# Maven Build Output
+# ============================================
 target/
 *.jar
 *.war
@@ -6,33 +8,44 @@ target/
 *.zip
 *.tar.gz
 
-# IDE
+# ============================================
+# IDE and Editor Files
+# ============================================
 .idea/
 *.iml
 .project
 .classpath
 .settings/
 
-# OS
+# ============================================
+# Operating System Files
+# ============================================
 .DS_Store
 Thumbs.db
 
+# ============================================
 # Logs
+# ============================================
 *.log
 
-# Allure отчеты
-allure-report/
+# ============================================
+# Allure Reports and Binaries
+# ============================================
+# Local Allure cache and reports
+.allure/
+allure-*/
+allure-current/
 allure-results/
+allure-report/
 
-# Исключение для allure-results внутри target (чтобы коммитить)
+# Allure binary distribution (kept in tools/)
+tools/allure/allure-2.24.0/
+
+# ============================================
+# Exceptions - DO NOT IGNORE these
+# ============================================
+# We need to commit Allure test results in target
 !target/allure-results/
+# But ignore temporary files inside
 target/allure-results/*.txt
 target/allure-results/*.tmp
-.allure/
-allure-*/
-allure-current
-# Allure reports and binaries
-.allure/
-allure-*/
-allure-current
-tools/allure/allure-2.24.0/

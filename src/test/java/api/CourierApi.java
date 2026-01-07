@@ -1,52 +1,55 @@
 package api;
 
+import io.qameta.allure.Step;
+import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import models.Courier;
+import models.CourierCredentials;
+import utils.Config;
 
 import static io.restassured.RestAssured.given;
 
 public class CourierApi {
 
-    private static final RequestSpecification requestSpec = new RequestSpecBuilder()
-            .setBaseUri("https://qa-scooter.praktikum-services.ru")
+    private static final RequestSpecification REQUEST_SPEC = new RequestSpecBuilder()
+            .setBaseUri(Config.BASE_URL)
+            .setBasePath(Config.BASE_PATH)
             .setContentType(ContentType.JSON)
+            .addFilter(new AllureRestAssured())
             .build();
 
+    @Step("Создание курьера")
     public Response createCourier(Courier courier) {
         return given()
-                .spec(requestSpec)
+                .spec(REQUEST_SPEC)
                 .body(courier)
                 .when()
-                .post("/api/v1/courier");
+                .post(Config.COURIER);
     }
 
+    @Step("Логин курьера с логином: {courier.login}")
     public Response loginCourier(Courier courier) {
-        return given()
-                .spec(requestSpec)
-                .body(courier)
-                .when()
-                .post("/api/v1/courier/login");
+        CourierCredentials credentials = new CourierCredentials(courier.getLogin(), courier.getPassword());
+        return loginCourier(credentials);
     }
 
-    public Response loginCourier(String login, String password) {
+    @Step("Логин курьера с учетными данными")
+    public Response loginCourier(CourierCredentials credentials) {
         return given()
-                .spec(requestSpec)
-                .body("{\"login\": \"" + login + "\", \"password\": \"" + password + "\"}")
+                .spec(REQUEST_SPEC)
+                .body(credentials)
                 .when()
-                .post("/api/v1/courier/login");
+                .post(Config.COURIER_LOGIN);
     }
 
-    public Response deleteCourier(String id) {
+    @Step("Удаление курьера с ID: {id}")
+    public Response deleteCourier(Integer id) {
         return given()
-                .spec(requestSpec)
+                .spec(REQUEST_SPEC)
                 .when()
-                .delete("/api/v1/courier/" + id);
-    }
-
-    public Response deleteCourier(int id) {
-        return deleteCourier(String.valueOf(id));
+                .delete(Config.COURIER + "/" + id);
     }
 }

@@ -1,82 +1,49 @@
 package api;
 
+import io.qameta.allure.Step;
+import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 import models.Order;
+import utils.Config;
 
 import static io.restassured.RestAssured.given;
 
 public class OrderApi {
 
-    private static final RequestSpecification requestSpec = new RequestSpecBuilder()
-            .setBaseUri("https://qa-scooter.praktikum-services.ru")
+    private static final RequestSpecification REQUEST_SPEC = new RequestSpecBuilder()
+            .setBaseUri(Config.BASE_URL)
+            .setBasePath(Config.BASE_PATH)
             .setContentType(ContentType.JSON)
+            .addFilter(new AllureRestAssured())
             .build();
 
+    @Step("Создание заказа")
     public Response createOrder(Order order) {
         return given()
-                .spec(requestSpec)
+                .spec(REQUEST_SPEC)
                 .body(order)
                 .when()
-                .post("/api/v1/orders");
+                .post(Config.ORDER);
     }
 
-    public Response getOrdersList() {
+    @Step("Получение списка заказов")
+    public Response getOrders() {
         return given()
-                .spec(requestSpec)
+                .spec(REQUEST_SPEC)
                 .when()
-                .get("/api/v1/orders");
+                .get(Config.ORDER);
     }
 
-    public Response getOrdersListWithParams(Integer courierId, String[] nearestStation,
-                                            Integer limit, Integer page) {
+    @Step("Отмена заказа с track: {track}")
+    public Response cancelOrder(Integer track) {
+        String cancelBody = String.format("{\"track\": %d}", track);
         return given()
-                .spec(requestSpec)
-                .queryParam("courierId", courierId)
-                .queryParam("nearestStation", nearestStation)
-                .queryParam("limit", limit)
-                .queryParam("page", page)
+                .spec(REQUEST_SPEC)
+                .body(cancelBody)
                 .when()
-                .get("/api/v1/orders");
-    }
-
-    public Response getOrderByTrack(int track) {
-        return given()
-                .spec(requestSpec)
-                .queryParam("t", track)
-                .when()
-                .get("/api/v1/orders/track");
-    }
-
-    public Response acceptOrder(int orderId, int courierId) {
-        return given()
-                .spec(requestSpec)
-                .queryParam("courierId", courierId)
-                .when()
-                .put("/api/v1/orders/accept/" + orderId);
-    }
-
-    public Response finishOrder(int orderId) {
-        return given()
-                .spec(requestSpec)
-                .when()
-                .put("/api/v1/orders/finish/" + orderId);
-    }
-
-    public Response cancelOrder(int track) {
-        return given()
-                .spec(requestSpec)
-                .body("{\"track\": " + track + "}")
-                .when()
-                .put("/api/v1/orders/cancel");
-    }
-
-    public Response getCourierOrdersCount(int courierId) {
-        return given()
-                .spec(requestSpec)
-                .when()
-                .get("/api/v1/courier/" + courierId + "/ordersCount");
+                .put(Config.ORDER + "/cancel");
     }
 }
